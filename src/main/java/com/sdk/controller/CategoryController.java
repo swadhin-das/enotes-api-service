@@ -3,7 +3,9 @@ package com.sdk.controller;
 import com.sdk.dto.CategoryDto;
 import com.sdk.dto.CategoryResponse;
 import com.sdk.entity.Category;
+import com.sdk.exception.ResourceNotFoundException;
 import com.sdk.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
@@ -27,6 +30,7 @@ public class CategoryController {
             return new ResponseEntity<>("saved success",HttpStatus.CREATED);
         }else {
             return new ResponseEntity<>("not saved",HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
 
     }
@@ -52,12 +56,26 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id){
-       CategoryDto categoryDto = categoryService.getCategoryById(id);
-       if(ObjectUtils.isEmpty(categoryDto)){
-           return new ResponseEntity<>("Category not found with id : "+id,HttpStatus.NOT_FOUND);
-       }
+    public ResponseEntity<?> getCategoryDetailsById(@PathVariable Integer id) throws Exception {
+//        try{
+//            CategoryDto categoryDto = categoryService.getCategoryById(id);
+//            if(ObjectUtils.isEmpty(categoryDto)){
+//                return new ResponseEntity<>("Category not found with id : "+id,HttpStatus.NOT_FOUND);
+//            }
+//            return new ResponseEntity<>(categoryDto,HttpStatus.OK);
+//        } catch (ResourceNotFoundException e) {
+//            log.error("Controller:: getCategoryDetailsById::",e.getMessage());
+//            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+//        }
+//        catch (Exception e) {
+//            return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        CategoryDto categoryDto = categoryService.getCategoryById(id);
+        if(ObjectUtils.isEmpty(categoryDto)){
+            return new ResponseEntity<>("Internal Server Error",HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(categoryDto,HttpStatus.OK);
+
     }
 
     @DeleteMapping("/{id}")

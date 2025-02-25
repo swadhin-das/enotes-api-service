@@ -3,6 +3,7 @@ package com.sdk.service.impl;
 import com.sdk.dto.CategoryDto;
 import com.sdk.dto.CategoryResponse;
 import com.sdk.entity.Category;
+import com.sdk.exception.ResourceNotFoundException;
 import com.sdk.repository.CategoryRepository;
 import com.sdk.service.CategoryService;
 import org.modelmapper.ModelMapper;
@@ -77,10 +78,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto getCategoryById(Integer id) {
-        Optional<Category> findByCategory = categoryRepo.findByIdAndIsDeletedFalse(id);
-        if (findByCategory.isPresent()) {
-            Category category = findByCategory.get();
+    public CategoryDto getCategoryById(Integer id) throws Exception {
+        Category category = categoryRepo.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Category not found with id: "+ id));
+//        if (findByCategory.isPresent()) {
+//            Category category = findByCategory.get();
+//            return mapper.map(category, CategoryDto.class);
+//        }
+        if(ObjectUtils.isEmpty(category)){
+            if(category.getName()==null){
+                throw new IllegalArgumentException("name is null");
+            }
+//            category.getName().toUpperCase();
             return mapper.map(category, CategoryDto.class);
         }
         return null;
