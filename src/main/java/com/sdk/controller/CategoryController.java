@@ -20,7 +20,7 @@ public class CategoryController {
     @Autowired  //@Autowired Automatically creates object and add dependency injection
     private CategoryService categoryService;
 
-    @PostMapping("/save-category")
+    @PostMapping("/save")
     public ResponseEntity<?> saveCategory(@RequestBody CategoryDto categoryDto){// ? mean we can return any value
         Boolean saveCategory = categoryService.saveCategory(categoryDto);
         if (saveCategory){
